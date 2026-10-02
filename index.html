@@ -951,8 +951,119 @@
       body.mode-nego .categories-grid,
       body.mode-nego .categories-controls,
       body.mode-story .categories-grid,
-      body.mode-story .categories-controls {
+      body.mode-story .categories-controls,
+      body.mode-diction .categories-grid,
+      body.mode-diction .categories-controls,
+      body.mode-interview .categories-grid,
+      body.mode-interview .categories-controls,
+      body.mode-tricks .categories-grid,
+      body.mode-tricks .categories-controls {
         display: none;
+      }
+      .interview-extra {
+        display: none;
+        justify-content: center;
+        margin-top: 16px;
+      }
+      body.mode-interview .interview-extra {
+        display: flex;
+      }
+      .example-box {
+        display: none;
+        text-align: left;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+        font-size: 15px;
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+      body.mode-interview .example-box.show {
+        display: block;
+      }
+      .trick-box {
+        display: none;
+        text-align: left;
+        margin-top: 10px;
+      }
+      body.mode-tricks .trick-box {
+        display: block;
+      }
+      body.mode-tricks .topic-text {
+        font-size: clamp(1.25rem, 5.5vw, 1.7rem);
+      }
+      .trick-tag {
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.75;
+        margin-bottom: 6px;
+      }
+      .trick-sec {
+        margin: 8px 0;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .trick-sec b {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+      .trick-sit {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+      }
+      .trick-note {
+        font-size: 12px;
+        opacity: 0.65;
+        margin-top: 8px;
+      }
+      .diction-list {
+        display: none;
+        text-align: left;
+        margin-top: 8px;
+      }
+      body.mode-diction .diction-list {
+        display: block;
+      }
+      body.mode-diction .topic-text {
+        display: none;
+      }
+      body.mode-interview .topic-text {
+        font-size: clamp(1.15rem, 5vw, 1.5rem);
+        line-height: 1.45;
+      }
+      .diction-item {
+        margin: 10px 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+      }
+      .diction-tag {
+        font-size: 11px;
+        opacity: 0.65;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .diction-title {
+        display: block;
+        font-weight: 700;
+        margin: 2px 0;
+      }
+      .diction-text {
+        font-style: italic;
+        margin: 4px 0;
+        line-height: 1.45;
+      }
+      .diction-how {
+        font-size: 14px;
+        opacity: 0.85;
+        line-height: 1.45;
       }
       body.stage-mode #timerPresets {
         display: none !important;
@@ -2295,11 +2406,14 @@
           <button class="mode-btn" data-mode="deep" id="modeBtnDeep">Глубже</button>
           <button class="mode-btn" data-mode="story" id="modeBtnStory">Сторителлинг</button>
           <button class="mode-btn" data-mode="custom" id="modeBtnCustom">Свои темы</button>
+          <button class="mode-btn" data-mode="diction" id="modeBtnDiction">Дикция и артикуляция</button>
           <button class="mode-btn" data-mode="debate" id="modeBtnDebate">Дебаты</button>
+          <button class="mode-btn" data-mode="tricks" id="modeBtnTricks">Речевые приёмы</button>
           <button class="mode-btn" data-mode="conflict" id="modeBtnConflict">Конфликт</button>
           <button class="mode-btn" data-mode="nego" id="modeBtnNego">
             <span id="modeBtnNegoText">Переговоры</span>
           </button>
+          <button class="mode-btn" data-mode="interview" id="modeBtnInterview">Интервью</button>
         </div>
         </div>
       </div>
@@ -2380,6 +2494,12 @@
             <img class="story-img" id="storyImg" alt="" />
           </div>
           <div class="topic-text" id="topicText"></div>
+          <div class="diction-list" id="dictionList"></div>
+          <div class="trick-box" id="trickBox"></div>
+          <div class="interview-extra" id="interviewExtra">
+            <button class="ctrl-btn-small" id="exampleBtn">Показать пример</button>
+          </div>
+          <div class="example-box" id="exampleBox"></div>
           <div class="story-caption" id="storyCaption"></div>
           <div class="story-context" id="storyContext"></div>
           <div class="story-bio" id="storyBio"></div>
@@ -2773,6 +2893,28 @@
           plan: "План",
           sprint: "Спринт",
           mNego: "Переговоры",
+          mDiction: "Дикция и артикуляция",
+          mInterview: "Интервью",
+          h_diction: "10 упражнений: 5 на артикуляцию и 5 на дикцию, с пояснениями",
+          h_interview: "Каверзный вопрос от HR — отвечайте, как на настоящем собеседовании",
+          dictionLabel: "Упражнения:",
+          interviewLabel: "Вопрос HR:",
+          dictionArt: "Артикуляция",
+          dictionDic: "Дикция",
+          dictionHow: "Как делать: ",
+          mTricks: "Речевые приёмы",
+          h_tricks: "Риторический приём с примером и ситуацией для отработки",
+          tricksLabel: "Приём:",
+          trickClassic: "Классическая риторика",
+          trickBlack: "Чёрная риторика — учимся распознавать и защищаться",
+          trickEssence: "Суть",
+          trickExample: "Пример",
+          trickDefense: "Как ответить",
+          trickSituation: "Ситуация для отработки",
+          trickNote: "Используйте приёмы этично: цель — убеждать честно и узнавать манипуляции, а не вредить людям.",
+          exampleShow: "Показать пример",
+          exampleHide: "Скрыть пример",
+          exampleLabel: "Пример ответа:",
           h_nego: "Кейс-ситуация и план переговоров",
           caseLabel: "Кейс:",
           tool: "Инструмент",
@@ -2807,6 +2949,12 @@
           legalPrivacy: "Политика конфиденциальности",
           moreModeNego: "Переговоры",
           moreModeNegoDesc: "Кейс-ситуация и план переговоров из пяти шагов",
+          moreModeInterview: "Интервью",
+          moreModeInterviewDesc: "Современные каверзные вопросы от HR для тренировки собеседования",
+          moreModeDiction: "Дикция и артикуляция",
+          moreModeDictionDesc: "Десять упражнений на дикцию и артикуляцию с пояснениями",
+          moreModeTricks: "Речевые приёмы",
+          moreModeTricksDesc: "50 приёмов классической и чёрной риторики с примерами и ситуациями для отработки",
           moreLocked: "🔒 нужен код",
           moreOpen: "✓ открыт",
           moreActive: "Доступ открыт: осталось дней — ",
@@ -2875,6 +3023,28 @@
           plan: "Plan",
           sprint: "Sprint",
           mNego: "Negotiation",
+          mDiction: "Diction & articulation",
+          mInterview: "Interview",
+          h_diction: "10 exercises: 5 for articulation and 5 for diction, with instructions",
+          h_interview: "A tricky HR question — answer as in a real job interview",
+          dictionLabel: "Exercises:",
+          interviewLabel: "HR question:",
+          dictionArt: "Articulation",
+          dictionDic: "Diction",
+          dictionHow: "How to do it: ",
+          mTricks: "Speech techniques",
+          h_tricks: "A rhetorical technique with an example and a situation to practise",
+          tricksLabel: "Technique:",
+          trickClassic: "Classical rhetoric",
+          trickBlack: "Dark rhetoric — learn to recognise and defend",
+          trickEssence: "Essence",
+          trickExample: "Example",
+          trickDefense: "How to respond",
+          trickSituation: "Situation to practise",
+          trickNote: "Use techniques ethically: the aim is to persuade honestly and recognise manipulation, not to harm people.",
+          exampleShow: "Show example",
+          exampleHide: "Hide example",
+          exampleLabel: "Sample answer:",
           h_nego: "A case and a negotiation plan",
           caseLabel: "Case:",
           tool: "Tool",
@@ -2910,6 +3080,12 @@
           legalPrivacy: "Privacy policy",
           moreModeNego: "Negotiation",
           moreModeNegoDesc: "A case and a five-step negotiation plan",
+          moreModeInterview: "Interview",
+          moreModeInterviewDesc: "Modern, tricky HR questions to practise job interviews",
+          moreModeDiction: "Diction & articulation",
+          moreModeDictionDesc: "Ten diction and articulation exercises with instructions",
+          moreModeTricks: "Speech techniques",
+          moreModeTricksDesc: "50 classical and dark rhetoric techniques with examples and practice situations",
           moreLocked: "🔒 code needed",
           moreOpen: "✓ unlocked",
           moreActive: "Access is active, days left: ",
@@ -2981,6 +3157,10 @@
         deepTotal = 600,
         currentDebate = null,
         currentAttack = null,
+        currentInterview = null,
+        currentTrick = null,
+        exampleShown = false,
+        currentDiction = null,
         currentCase = null;
       const conflictDomains = new Set(["family", "relationship"]);
       let storySub = "retell",
@@ -2991,7 +3171,7 @@
       let customTopics = [],
         customTotal = 300,
         lastCustom = "";
-      const PREMIUM_MODES = ["conflict", "nego"];
+      const PREMIUM_MODES = ["conflict", "nego", "interview", "diction", "tricks"];
       const DEFAULT_TARIFFS = [
         { days: 30, label: "30 дней", sum: "299.00" },
         { days: 180, label: "полгода", sum: "1490.00" },
@@ -3162,6 +3342,9 @@
           if (mode === "nego" && currentCase) renderCase();
           else if (mode === "conflict" && currentAttack) renderConflict();
           else if (mode === "debate" && currentDebate) renderDebate();
+          else if (mode === "interview" && currentInterview) renderInterview();
+          else if (mode === "diction" && currentDiction) renderDiction();
+          else if (mode === "tricks" && currentTrick) renderTrick();
           else if (mode === "story" && currentStory) generateStory();
           else generateTopic();
         }
@@ -3217,6 +3400,40 @@
                 currentDebate = r;
                 debateSide = Math.random() < 0.5 ? "pro" : "con";
                 renderDebate();
+              }),
+            )
+            .catch(apiFail);
+          return true;
+        }
+        if (mode === "interview") {
+          apiGet("interview", { avoid: currentInterview ? currentInterview.idx : -1, code: access ? access.code : "" })
+            .then(
+              latest(function (r) {
+                exampleShown = false;
+                currentInterview = r;
+                renderInterview();
+              }),
+            )
+            .catch(apiFail);
+          return true;
+        }
+        if (mode === "tricks") {
+          apiGet("tricks", { avoid: currentTrick ? currentTrick.idx : -1, code: access ? access.code : "" })
+            .then(
+              latest(function (r) {
+                currentTrick = r;
+                renderTrick();
+              }),
+            )
+            .catch(apiFail);
+          return true;
+        }
+        if (mode === "diction") {
+          apiGet("diction", { code: access ? access.code : "" })
+            .then(
+              latest(function (r) {
+                currentDiction = r;
+                renderDiction();
               }),
             )
             .catch(apiFail);
@@ -3756,6 +3973,9 @@
         [
           { mode: "conflict", name: u.moreModeConflict, desc: u.moreModeConflictDesc },
           { mode: "nego", name: u.moreModeNego, desc: u.moreModeNegoDesc },
+          { mode: "interview", name: u.moreModeInterview, desc: u.moreModeInterviewDesc },
+          { mode: "diction", name: u.moreModeDiction, desc: u.moreModeDictionDesc },
+          { mode: "tricks", name: u.moreModeTricks, desc: u.moreModeTricksDesc },
         ].forEach(function (m) {
           const card = document.createElement("div");
           card.className = "more-mode";
@@ -3877,6 +4097,12 @@
               ? u.conflictLabel
               : mode === "custom"
                 ? u.customLabel
+              : mode === "diction"
+                ? u.dictionLabel
+              : mode === "interview"
+                ? u.interviewLabel
+              : mode === "tricks"
+                ? u.tricksLabel
               : mode === "nego"
                 ? u.caseLabel
                 : mode === "story"
@@ -3902,6 +4128,9 @@
         renderCustomCount();
         $("modeBtnNegoText").textContent = (hasAccess() ? "" : "🔒 ") + u.mNego;
         $("modeBtnStory").textContent = u.mStory;
+        $("modeBtnTricks").textContent = (hasAccess() ? "" : "🔒 ") + u.mTricks;
+        $("modeBtnDiction").textContent = (hasAccess() ? "" : "🔒 ") + u.mDiction;
+        $("modeBtnInterview").textContent = (hasAccess() ? "" : "🔒 ") + u.mInterview;
         $("modeHint").textContent = u["h_" + mode];
         $("flipSideBtn").textContent = u.flip;
         const i18 = currentLang === "ru" ? 0 : 1;
@@ -3940,7 +4169,7 @@
         );
       }
       function setMode(m) {
-        if (["debate", "deep", "conflict", "story", "custom", "nego"].indexOf(m) < 0) m = "impromptu";
+        if (["debate", "deep", "conflict", "story", "custom", "nego", "diction", "interview", "tricks"].indexOf(m) < 0) m = "impromptu";
         if (PREMIUM_MODES.indexOf(m) >= 0 && !hasAccess()) {
           pendingPremium = m;
           m = "impromptu";
@@ -3967,6 +4196,9 @@
         document.body.classList.toggle("mode-story", m === "story");
         document.body.classList.toggle("mode-custom", m === "custom");
         document.body.classList.toggle("mode-nego", m === "nego");
+        document.body.classList.toggle("mode-diction", m === "diction");
+        document.body.classList.toggle("mode-interview", m === "interview");
+        document.body.classList.toggle("mode-tricks", m === "tricks");
         document.body.classList.toggle(
           "story-sub-painting",
           m === "story" && storySub === "painting",
@@ -4019,7 +4251,7 @@
       function renderConflict() {
         const i = currentLang === "ru" ? 0 : 1;
         $("topicText").textContent = "«" + currentAttack[i] + "»";
-        const tip = currentAttack[2] || "";
+        const tip = (currentLang === "ru" ? currentAttack[2] : currentAttack[3] || currentAttack[2]) || "";
         $("conflictExtra").classList.toggle("has-tip", !!tip);
         $("conflictTip").classList.remove("show");
         $("conflictTip").textContent = tip;
@@ -4032,6 +4264,107 @@
         $("topicLabel").textContent = u.caseLabel;
         $("topicText").textContent = c.sit[i];
         $("negoExtra").textContent = "💡 " + u.tool + ": " + c.tool[i];
+      }
+      function renderInterview() {
+        $("topicText").textContent = currentInterview[currentLang];
+        renderExample();
+      }
+      function renderExample() {
+        const u = ui[currentLang],
+          ex = currentInterview && currentInterview.example,
+          box = $("exampleBox");
+        $("exampleBtn").textContent = exampleShown && ex ? u.exampleHide : u.exampleShow;
+        box.classList.toggle("show", !!(exampleShown && ex));
+        box.textContent = ex ? u.exampleLabel + "\n" + ex[currentLang] : "";
+      }
+      function showExample() {
+        if (!currentInterview) return;
+        if (exampleShown) {
+          exampleShown = false;
+          renderExample();
+          return;
+        }
+        if (currentInterview.example) {
+          exampleShown = true;
+          renderExample();
+          return;
+        }
+        apiGet("interviewex", { idx: currentInterview.idx, code: access ? access.code : "" })
+          .then(
+            latest(function (r) {
+              currentInterview.example = r;
+              exampleShown = true;
+              renderExample();
+            }),
+          )
+          .catch(apiFail);
+      }
+      function renderTrick() {
+        const u = ui[currentLang],
+          i = currentLang === "ru" ? 0 : 1,
+          t = currentTrick,
+          box = $("trickBox");
+        $("topicText").textContent = t.n[i];
+        box.innerHTML = "";
+        function sec(title, text, cls) {
+          const d = document.createElement("div");
+          d.className = "trick-sec" + (cls ? " " + cls : "");
+          const b = document.createElement("b");
+          b.textContent = title;
+          d.appendChild(b);
+          d.appendChild(document.createTextNode(text));
+          box.appendChild(d);
+        }
+        const tag = document.createElement("span");
+        tag.className = "trick-tag";
+        tag.textContent = t.kind === "b" ? u.trickBlack : u.trickClassic;
+        box.appendChild(tag);
+        sec(u.trickEssence, t.d[i]);
+        sec(u.trickExample, t.ex[i]);
+        if (t.f) sec(u.trickDefense, t.f[i]);
+        sec(u.trickSituation, t.sit[i], "trick-sit");
+        const note = document.createElement("div");
+        note.className = "trick-note";
+        note.textContent = u.trickNote;
+        box.appendChild(note);
+      }
+      function renderDiction() {
+        const u = ui[currentLang],
+          list = $("dictionList"),
+          en = currentLang === "en";
+        list.innerHTML = "";
+        let n = 0;
+        function add(tag, title, text, how) {
+          n++;
+          const it = document.createElement("div");
+          it.className = "diction-item";
+          const t = document.createElement("span");
+          t.className = "diction-tag";
+          t.textContent = n + ". " + tag;
+          const h = document.createElement("span");
+          h.className = "diction-title";
+          h.textContent = title;
+          it.appendChild(t);
+          it.appendChild(h);
+          if (text) {
+            const x = document.createElement("div");
+            x.className = "diction-text";
+            x.textContent = "«" + text + "»";
+            it.appendChild(x);
+          }
+          const w = document.createElement("div");
+          w.className = "diction-how";
+          w.textContent = u.dictionHow + how;
+          it.appendChild(w);
+          list.appendChild(it);
+        }
+        (currentDiction.art || []).forEach(function (a) {
+          add(u.dictionArt, en ? a[2] : a[0], "", en ? a[3] : a[1]);
+        });
+        (currentDiction.dic || []).forEach(function (d) {
+          add(u.dictionDic, en ? d[3] : d[0], en ? d[4] : d[1], en ? d[5] : d[2]);
+        });
+        $("topicText").textContent = "";
       }
       function renderDebate() {
         $("topicText").textContent = currentDebate[currentLang];
@@ -4689,6 +5022,7 @@
             setMode(b.dataset.mode);
           });
         });
+        $("exampleBtn").addEventListener("click", showExample);
         $("flipSideBtn").addEventListener("click", function () {
           debateSide = debateSide === "pro" ? "con" : "pro";
           renderSide();
