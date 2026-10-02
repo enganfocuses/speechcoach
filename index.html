@@ -951,8 +951,54 @@
       body.mode-nego .categories-grid,
       body.mode-nego .categories-controls,
       body.mode-story .categories-grid,
-      body.mode-story .categories-controls {
+      body.mode-story .categories-controls,
+      body.mode-diction .categories-grid,
+      body.mode-diction .categories-controls,
+      body.mode-interview .categories-grid,
+      body.mode-interview .categories-controls {
         display: none;
+      }
+      .diction-list {
+        display: none;
+        text-align: left;
+        margin-top: 8px;
+      }
+      body.mode-diction .diction-list {
+        display: block;
+      }
+      body.mode-diction .topic-text {
+        display: none;
+      }
+      body.mode-interview .topic-text {
+        font-size: clamp(1.15rem, 5vw, 1.5rem);
+        line-height: 1.45;
+      }
+      .diction-item {
+        margin: 10px 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+      }
+      .diction-tag {
+        font-size: 11px;
+        opacity: 0.65;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .diction-title {
+        display: block;
+        font-weight: 700;
+        margin: 2px 0;
+      }
+      .diction-text {
+        font-style: italic;
+        margin: 4px 0;
+        line-height: 1.45;
+      }
+      .diction-how {
+        font-size: 14px;
+        opacity: 0.85;
+        line-height: 1.45;
       }
       body.stage-mode #timerPresets {
         display: none !important;
@@ -2284,11 +2330,13 @@
           <button class="mode-btn" data-mode="deep" id="modeBtnDeep">Глубже</button>
           <button class="mode-btn" data-mode="story" id="modeBtnStory">Сторителлинг</button>
           <button class="mode-btn" data-mode="custom" id="modeBtnCustom">Свои темы</button>
+          <button class="mode-btn" data-mode="diction" id="modeBtnDiction">Дикция и артикуляция</button>
           <button class="mode-btn" data-mode="debate" id="modeBtnDebate">Дебаты</button>
           <button class="mode-btn" data-mode="conflict" id="modeBtnConflict">Конфликт</button>
           <button class="mode-btn" data-mode="nego" id="modeBtnNego">
             <span id="modeBtnNegoText">Переговоры</span>
           </button>
+          <button class="mode-btn" data-mode="interview" id="modeBtnInterview">Интервью</button>
         </div>
         </div>
       </div>
@@ -2369,6 +2417,7 @@
             <img class="story-img" id="storyImg" alt="" />
           </div>
           <div class="topic-text" id="topicText"></div>
+          <div class="diction-list" id="dictionList"></div>
           <div class="story-caption" id="storyCaption"></div>
           <div class="story-context" id="storyContext"></div>
           <div class="story-bio" id="storyBio"></div>
@@ -2757,6 +2806,15 @@
           plan: "План",
           sprint: "Спринт",
           mNego: "Переговоры",
+          mDiction: "Дикция и артикуляция",
+          mInterview: "Интервью",
+          h_diction: "10 упражнений: 5 на артикуляцию и 5 на дикцию, с пояснениями",
+          h_interview: "Каверзный вопрос от HR — отвечайте, как на настоящем собеседовании",
+          dictionLabel: "Упражнения:",
+          interviewLabel: "Вопрос HR:",
+          dictionArt: "Артикуляция",
+          dictionDic: "Дикция",
+          dictionHow: "Как делать: ",
           h_nego: "Кейс-ситуация и план переговоров",
           caseLabel: "Кейс:",
           tool: "Инструмент",
@@ -2791,6 +2849,8 @@
           legalPrivacy: "Политика конфиденциальности",
           moreModeNego: "Переговоры",
           moreModeNegoDesc: "Кейс-ситуация и план переговоров из пяти шагов",
+          moreModeInterview: "Интервью",
+          moreModeInterviewDesc: "Современные каверзные вопросы от HR для тренировки собеседования",
           moreLocked: "🔒 нужен код",
           moreOpen: "✓ открыт",
           moreActive: "Доступ открыт: осталось дней — ",
@@ -2859,6 +2919,15 @@
           plan: "Plan",
           sprint: "Sprint",
           mNego: "Negotiation",
+          mDiction: "Diction & articulation",
+          mInterview: "Interview",
+          h_diction: "10 exercises: 5 for articulation and 5 for diction, with instructions",
+          h_interview: "A tricky HR question — answer as in a real job interview",
+          dictionLabel: "Exercises:",
+          interviewLabel: "HR question:",
+          dictionArt: "Articulation",
+          dictionDic: "Diction",
+          dictionHow: "How to do it: ",
           h_nego: "A case and a negotiation plan",
           caseLabel: "Case:",
           tool: "Tool",
@@ -2894,6 +2963,8 @@
           legalPrivacy: "Privacy policy",
           moreModeNego: "Negotiation",
           moreModeNegoDesc: "A case and a five-step negotiation plan",
+          moreModeInterview: "Interview",
+          moreModeInterviewDesc: "Modern, tricky HR questions to practise job interviews",
           moreLocked: "🔒 code needed",
           moreOpen: "✓ unlocked",
           moreActive: "Access is active, days left: ",
@@ -2965,6 +3036,8 @@
         deepTotal = 600,
         currentDebate = null,
         currentAttack = null,
+        currentInterview = null,
+        currentDiction = null,
         currentCase = null;
       const conflictDomains = new Set(["family", "relationship"]);
       let storySub = "retell",
@@ -2975,7 +3048,7 @@
       let customTopics = [],
         customTotal = 300,
         lastCustom = "";
-      const PREMIUM_MODES = ["conflict", "nego"];
+      const PREMIUM_MODES = ["conflict", "nego", "interview"];
       const DEFAULT_TARIFFS = [
         { days: 30, label: "30 дней", sum: "299.00" },
         { days: 180, label: "полгода", sum: "1490.00" },
@@ -3146,6 +3219,8 @@
           if (mode === "nego" && currentCase) renderCase();
           else if (mode === "conflict" && currentAttack) renderConflict();
           else if (mode === "debate" && currentDebate) renderDebate();
+          else if (mode === "interview" && currentInterview) renderInterview();
+          else if (mode === "diction" && currentDiction) renderDiction();
           else if (mode === "story" && currentStory) generateStory();
           else generateTopic();
         }
@@ -3201,6 +3276,28 @@
                 currentDebate = r;
                 debateSide = Math.random() < 0.5 ? "pro" : "con";
                 renderDebate();
+              }),
+            )
+            .catch(apiFail);
+          return true;
+        }
+        if (mode === "interview") {
+          apiGet("interview", { avoid: currentInterview ? currentInterview.idx : -1, code: access ? access.code : "" })
+            .then(
+              latest(function (r) {
+                currentInterview = r;
+                renderInterview();
+              }),
+            )
+            .catch(apiFail);
+          return true;
+        }
+        if (mode === "diction") {
+          apiGet("diction")
+            .then(
+              latest(function (r) {
+                currentDiction = r;
+                renderDiction();
               }),
             )
             .catch(apiFail);
@@ -3740,6 +3837,7 @@
         [
           { mode: "conflict", name: u.moreModeConflict, desc: u.moreModeConflictDesc },
           { mode: "nego", name: u.moreModeNego, desc: u.moreModeNegoDesc },
+          { mode: "interview", name: u.moreModeInterview, desc: u.moreModeInterviewDesc },
         ].forEach(function (m) {
           const card = document.createElement("div");
           card.className = "more-mode";
@@ -3861,6 +3959,10 @@
               ? u.conflictLabel
               : mode === "custom"
                 ? u.customLabel
+              : mode === "diction"
+                ? u.dictionLabel
+              : mode === "interview"
+                ? u.interviewLabel
               : mode === "nego"
                 ? u.caseLabel
                 : mode === "story"
@@ -3886,6 +3988,8 @@
         renderCustomCount();
         $("modeBtnNegoText").textContent = (hasAccess() ? "" : "🔒 ") + u.mNego;
         $("modeBtnStory").textContent = u.mStory;
+        $("modeBtnDiction").textContent = u.mDiction;
+        $("modeBtnInterview").textContent = (hasAccess() ? "" : "🔒 ") + u.mInterview;
         $("modeHint").textContent = u["h_" + mode];
         $("flipSideBtn").textContent = u.flip;
         const i18 = currentLang === "ru" ? 0 : 1;
@@ -3924,7 +4028,7 @@
         );
       }
       function setMode(m) {
-        if (["debate", "deep", "conflict", "story", "custom", "nego"].indexOf(m) < 0) m = "impromptu";
+        if (["debate", "deep", "conflict", "story", "custom", "nego", "diction", "interview"].indexOf(m) < 0) m = "impromptu";
         if (PREMIUM_MODES.indexOf(m) >= 0 && !hasAccess()) {
           pendingPremium = m;
           m = "impromptu";
@@ -3951,6 +4055,8 @@
         document.body.classList.toggle("mode-story", m === "story");
         document.body.classList.toggle("mode-custom", m === "custom");
         document.body.classList.toggle("mode-nego", m === "nego");
+        document.body.classList.toggle("mode-diction", m === "diction");
+        document.body.classList.toggle("mode-interview", m === "interview");
         document.body.classList.toggle(
           "story-sub-painting",
           m === "story" && storySub === "painting",
@@ -4016,6 +4122,47 @@
         $("topicLabel").textContent = u.caseLabel;
         $("topicText").textContent = c.sit[i];
         $("negoExtra").textContent = "💡 " + u.tool + ": " + c.tool[i];
+      }
+      function renderInterview() {
+        $("topicText").textContent = currentInterview[currentLang];
+      }
+      function renderDiction() {
+        const u = ui[currentLang],
+          list = $("dictionList"),
+          en = currentLang === "en";
+        list.innerHTML = "";
+        let n = 0;
+        function add(tag, title, text, how) {
+          n++;
+          const it = document.createElement("div");
+          it.className = "diction-item";
+          const t = document.createElement("span");
+          t.className = "diction-tag";
+          t.textContent = n + ". " + tag;
+          const h = document.createElement("span");
+          h.className = "diction-title";
+          h.textContent = title;
+          it.appendChild(t);
+          it.appendChild(h);
+          if (text) {
+            const x = document.createElement("div");
+            x.className = "diction-text";
+            x.textContent = "«" + text + "»";
+            it.appendChild(x);
+          }
+          const w = document.createElement("div");
+          w.className = "diction-how";
+          w.textContent = u.dictionHow + how;
+          it.appendChild(w);
+          list.appendChild(it);
+        }
+        (currentDiction.art || []).forEach(function (a) {
+          add(u.dictionArt, en ? a[2] : a[0], "", en ? a[3] : a[1]);
+        });
+        (currentDiction.dic || []).forEach(function (d) {
+          add(u.dictionDic, en ? d[3] : d[0], en ? d[4] : d[1], en ? d[5] : d[2]);
+        });
+        $("topicText").textContent = "";
       }
       function renderDebate() {
         $("topicText").textContent = currentDebate[currentLang];
