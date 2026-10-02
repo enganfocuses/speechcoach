@@ -4109,7 +4109,7 @@
       function renderConflict() {
         const i = currentLang === "ru" ? 0 : 1;
         $("topicText").textContent = "«" + currentAttack[i] + "»";
-        const tip = currentAttack[2] || "";
+        const tip = (currentLang === "ru" ? currentAttack[2] : currentAttack[3] || currentAttack[2]) || "";
         $("conflictExtra").classList.toggle("has-tip", !!tip);
         $("conflictTip").classList.remove("show");
         $("conflictTip").textContent = tip;
