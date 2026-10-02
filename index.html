@@ -2867,6 +2867,8 @@
           moreModeNegoDesc: "Кейс-ситуация и план переговоров из пяти шагов",
           moreModeInterview: "Интервью",
           moreModeInterviewDesc: "Современные каверзные вопросы от HR для тренировки собеседования",
+          moreModeDiction: "Дикция и артикуляция",
+          moreModeDictionDesc: "Десять упражнений на дикцию и артикуляцию с пояснениями",
           moreLocked: "🔒 нужен код",
           moreOpen: "✓ открыт",
           moreActive: "Доступ открыт: осталось дней — ",
@@ -2981,6 +2983,8 @@
           moreModeNegoDesc: "A case and a five-step negotiation plan",
           moreModeInterview: "Interview",
           moreModeInterviewDesc: "Modern, tricky HR questions to practise job interviews",
+          moreModeDiction: "Diction & articulation",
+          moreModeDictionDesc: "Ten diction and articulation exercises with instructions",
           moreLocked: "🔒 code needed",
           moreOpen: "✓ unlocked",
           moreActive: "Access is active, days left: ",
@@ -3064,7 +3068,7 @@
       let customTopics = [],
         customTotal = 300,
         lastCustom = "";
-      const PREMIUM_MODES = ["conflict", "nego", "interview"];
+      const PREMIUM_MODES = ["conflict", "nego", "interview", "diction"];
       const DEFAULT_TARIFFS = [
         { days: 30, label: "30 дней", sum: "299.00" },
         { days: 180, label: "полгода", sum: "1490.00" },
@@ -3309,7 +3313,7 @@
           return true;
         }
         if (mode === "diction") {
-          apiGet("diction")
+          apiGet("diction", { code: access ? access.code : "" })
             .then(
               latest(function (r) {
                 currentDiction = r;
@@ -3854,6 +3858,7 @@
           { mode: "conflict", name: u.moreModeConflict, desc: u.moreModeConflictDesc },
           { mode: "nego", name: u.moreModeNego, desc: u.moreModeNegoDesc },
           { mode: "interview", name: u.moreModeInterview, desc: u.moreModeInterviewDesc },
+          { mode: "diction", name: u.moreModeDiction, desc: u.moreModeDictionDesc },
         ].forEach(function (m) {
           const card = document.createElement("div");
           card.className = "more-mode";
@@ -4004,7 +4009,7 @@
         renderCustomCount();
         $("modeBtnNegoText").textContent = (hasAccess() ? "" : "🔒 ") + u.mNego;
         $("modeBtnStory").textContent = u.mStory;
-        $("modeBtnDiction").textContent = u.mDiction;
+        $("modeBtnDiction").textContent = (hasAccess() ? "" : "🔒 ") + u.mDiction;
         $("modeBtnInterview").textContent = (hasAccess() ? "" : "🔒 ") + u.mInterview;
         $("modeHint").textContent = u["h_" + mode];
         $("flipSideBtn").textContent = u.flip;
