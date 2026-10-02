@@ -2298,7 +2298,6 @@
         color: var(--text, #333);
         font-family: monospace;
         font-size: 16px;
-        text-transform: uppercase;
       }
       .more-title {
         font-size: 13px;
@@ -2367,7 +2366,8 @@
               id="codeInput"
               class="more-code-input"
               autocomplete="off"
-              autocapitalize="characters"
+              autocapitalize="off"
+              autocorrect="off"
               spellcheck="false"
               placeholder="SPK-XXXXXX-XXXXXX-XXXXXX-XXXXXX"
             />
@@ -2406,8 +2406,8 @@
           <button class="mode-btn" data-mode="deep" id="modeBtnDeep">Глубже</button>
           <button class="mode-btn" data-mode="story" id="modeBtnStory">Сторителлинг</button>
           <button class="mode-btn" data-mode="custom" id="modeBtnCustom">Свои темы</button>
-          <button class="mode-btn" data-mode="diction" id="modeBtnDiction">Дикция и артикуляция</button>
           <button class="mode-btn" data-mode="debate" id="modeBtnDebate">Дебаты</button>
+          <button class="mode-btn" data-mode="diction" id="modeBtnDiction">Дикция и артикуляция</button>
           <button class="mode-btn" data-mode="tricks" id="modeBtnTricks">Речевые приёмы</button>
           <button class="mode-btn" data-mode="conflict" id="modeBtnConflict">Конфликт</button>
           <button class="mode-btn" data-mode="nego" id="modeBtnNego">
@@ -2951,8 +2951,6 @@
           moreModeNegoDesc: "Кейс-ситуация и план переговоров из пяти шагов",
           moreModeInterview: "Интервью",
           moreModeInterviewDesc: "Современные каверзные вопросы от HR для тренировки собеседования",
-          moreModeDiction: "Дикция и артикуляция",
-          moreModeDictionDesc: "Десять упражнений на дикцию и артикуляцию с пояснениями",
           moreModeTricks: "Речевые приёмы",
           moreModeTricksDesc: "50 приёмов классической и чёрной риторики с примерами и ситуациями для отработки",
           moreLocked: "🔒 нужен код",
@@ -3082,8 +3080,6 @@
           moreModeNegoDesc: "A case and a five-step negotiation plan",
           moreModeInterview: "Interview",
           moreModeInterviewDesc: "Modern, tricky HR questions to practise job interviews",
-          moreModeDiction: "Diction & articulation",
-          moreModeDictionDesc: "Ten diction and articulation exercises with instructions",
           moreModeTricks: "Speech techniques",
           moreModeTricksDesc: "50 classical and dark rhetoric techniques with examples and practice situations",
           moreLocked: "🔒 code needed",
@@ -3171,7 +3167,7 @@
       let customTopics = [],
         customTotal = 300,
         lastCustom = "";
-      const PREMIUM_MODES = ["conflict", "nego", "interview", "diction", "tricks"];
+      const PREMIUM_MODES = ["conflict", "nego", "interview", "tricks"];
       const DEFAULT_TARIFFS = [
         { days: 30, label: "30 дней", sum: "299.00" },
         { days: 180, label: "полгода", sum: "1490.00" },
@@ -3429,7 +3425,7 @@
           return true;
         }
         if (mode === "diction") {
-          apiGet("diction", { code: access ? access.code : "" })
+          apiGet("diction")
             .then(
               latest(function (r) {
                 currentDiction = r;
@@ -3974,7 +3970,6 @@
           { mode: "conflict", name: u.moreModeConflict, desc: u.moreModeConflictDesc },
           { mode: "nego", name: u.moreModeNego, desc: u.moreModeNegoDesc },
           { mode: "interview", name: u.moreModeInterview, desc: u.moreModeInterviewDesc },
-          { mode: "diction", name: u.moreModeDiction, desc: u.moreModeDictionDesc },
           { mode: "tricks", name: u.moreModeTricks, desc: u.moreModeTricksDesc },
         ].forEach(function (m) {
           const card = document.createElement("div");
@@ -4129,7 +4124,7 @@
         $("modeBtnNegoText").textContent = (hasAccess() ? "" : "🔒 ") + u.mNego;
         $("modeBtnStory").textContent = u.mStory;
         $("modeBtnTricks").textContent = (hasAccess() ? "" : "🔒 ") + u.mTricks;
-        $("modeBtnDiction").textContent = (hasAccess() ? "" : "🔒 ") + u.mDiction;
+        $("modeBtnDiction").textContent = u.mDiction;
         $("modeBtnInterview").textContent = (hasAccess() ? "" : "🔒 ") + u.mInterview;
         $("modeHint").textContent = u["h_" + mode];
         $("flipSideBtn").textContent = u.flip;
