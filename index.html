@@ -1548,6 +1548,53 @@
       }
       body.mode-nego .nego-extra {
         display: block;
+        margin-top: 18px;
+        line-height: 1.65;
+        text-align: left;
+      }
+      .nego-actions {
+        display: none;
+        justify-content: center;
+        margin-top: 18px;
+      }
+      body.mode-nego .nego-actions {
+        display: flex;
+      }
+      .nego-sol-box {
+        display: none;
+        text-align: left;
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 14px;
+        border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+        font-size: 15px;
+        line-height: 1.65;
+        white-space: pre-line;
+      }
+      body.mode-nego .nego-sol-box.show {
+        display: block;
+      }
+      .more-email {
+        display: none;
+        margin: 12px 0 4px;
+        text-align: center;
+      }
+      .more-email.show {
+        display: block;
+      }
+      .more-email input {
+        width: 320px;
+        max-width: 100%;
+        padding: 9px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25));
+        background: var(--glass-bg, rgba(255, 255, 255, 0.1));
+        color: var(--text, #333);
+        font-size: 16px;
+      }
+      .more-email .more-note a {
+        color: inherit;
+        text-decoration: underline;
       }
 
       .story-panel {
@@ -2444,6 +2491,10 @@
           </div>
           <div class="more-title" id="moreTariffsTitle"></div>
           <div class="more-note" id="moreAll"></div>
+          <div class="more-email">
+            <input type="email" id="payEmail" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="100" />
+            <div class="more-note" id="payEmailNote"></div>
+          </div>
           <div class="more-tariffs" id="moreTariffs"></div>
           <div class="more-note" id="moreNote"></div>
         </div>
@@ -2579,6 +2630,10 @@
           <div class="story-bio" id="storyBio"></div>
           <div class="story-def" id="storyDef"></div>
           <div class="nego-extra" id="negoExtra"></div>
+          <div class="nego-actions" id="negoActions">
+            <button class="ctrl-btn-small" id="negoSolBtn">Показать предложенный вариант</button>
+          </div>
+          <div class="nego-sol-box" id="negoSolBox"></div>
           <div class="debate-extra">
             <span class="side-badge" id="sideBadge"></span>
             <button class="ctrl-btn-small" id="flipSideBtn">Другая сторона</button>
@@ -2998,9 +3053,16 @@
           exampleShow: "Показать пример",
           exampleHide: "Скрыть пример",
           exampleLabel: "Пример ответа:",
-          h_nego: "Кейс-ситуация и план переговоров",
+          h_nego: "Кейс: сначала постройте порядок решения сами, затем сравните с пошаговым вариантом",
           caseLabel: "Кейс:",
           tool: "Инструмент",
+          negoTask: "Ваша задача: определите порядок решения этого конфликта самостоятельно.\n1) Назовите стороны и их интересы (не только позиции).\n2) Оцените альтернативы каждой стороны: что будет, если договориться не удастся.\n3) Составьте 4–6 шагов решения по порядку: проговорите вслух или запишите в «Заметках».\n4) Нажмите «Показать предложенный вариант» и сравните со своим.",
+          negoShow: "Показать предложенный вариант",
+          negoHide: "Скрыть предложенный вариант",
+          negoSolTitle: "Предложенный порядок решения:",
+          payEmailPh: "E-mail для отправки кода (необязательно)",
+          payEmailNote: "Если укажете почту, мы отправим код и на неё. Код в любом случае появится на экране после оплаты. Адрес используется только для отправки кода — подробнее в ",
+          payEmailLink: "Политике конфиденциальности",
           noDir: "Выберите хотя бы одно направление",
           mStory: "Сторителлинг",
           h_story: "Без таймера: картины, пересказ, слова и импровизация",
@@ -3031,7 +3093,7 @@
           legalOffer: "Публичная оферта",
           legalPrivacy: "Политика конфиденциальности",
           moreModeNego: "Переговоры",
-          moreModeNegoDesc: "Кейс-ситуация и план переговоров из пяти шагов",
+          moreModeNegoDesc: "Кейс-ситуация: вы сами строите порядок решения, затем сравниваете с пошаговым вариантом",
           moreModeInterview: "Интервью",
           moreModeInterviewDesc: "Современные каверзные вопросы от HR для тренировки собеседования",
           moreModeTricks: "Речевые приёмы",
@@ -3135,9 +3197,16 @@
           exampleShow: "Show example",
           exampleHide: "Hide example",
           exampleLabel: "Sample answer:",
-          h_nego: "A case and a negotiation plan",
+          h_nego: "A case: build the resolution order yourself first, then compare with the step-by-step option",
           caseLabel: "Case:",
           tool: "Tool",
+          negoTask: "Your task: work out the order for resolving this conflict yourself.\n1) Name the parties and their interests (not just positions).\n2) Assess each side's alternatives: what happens if no deal is reached.\n3) Draft 4–6 resolution steps in order: say them aloud or write them in \"Notes\".\n4) Press \"Show suggested solution\" and compare with yours.",
+          negoShow: "Show suggested solution",
+          negoHide: "Hide suggested solution",
+          negoSolTitle: "Suggested resolution order:",
+          payEmailPh: "E-mail to send the code to (optional)",
+          payEmailNote: "If you enter an e-mail, we will send the code there too. The code will appear on screen after payment in any case. The address is used only to send the code — details in the ",
+          payEmailLink: "Privacy Policy",
           noDir: "Select at least one direction",
           mStory: "Storytelling",
           h_story: "No timer: paintings, retelling, words and improvisation",
@@ -3169,7 +3238,7 @@
           legalOffer: "Public offer",
           legalPrivacy: "Privacy policy",
           moreModeNego: "Negotiation",
-          moreModeNegoDesc: "A case and a five-step negotiation plan",
+          moreModeNegoDesc: "A case: you build the resolution order yourself, then compare with a step-by-step option",
           moreModeInterview: "Interview",
           moreModeInterviewDesc: "Modern, tricky HR questions to practise job interviews",
           moreModeTricks: "Speech techniques",
@@ -3251,7 +3320,8 @@
         trickPick = -1,
         exampleShown = false,
         currentDiction = null,
-        currentCase = null;
+        currentCase = null,
+        negoShown = false;
       const conflictDomains = new Set(["family", "relationship"]);
       let storySub = "retell",
         storyWordCount = 6,
@@ -3476,6 +3546,7 @@
           apiGet("nego", { avoid: currentCase ? currentCase.idx : -1, code: access ? access.code : "" })
             .then(
               latest(function (r) {
+                negoShown = false;
                 currentCase = r;
                 renderCase();
               }),
@@ -4096,6 +4167,17 @@
         $("moreGotCode").textContent = justGotCode;
         $("moreGot").classList.toggle("show", !!justGotCode);
         $("moreAll").textContent = u.moreAll;
+        $("payEmail").placeholder = u.payEmailPh;
+        document.querySelector(".more-email").classList.toggle("show", !!(tariffsData && tariffsData.mail));
+        const pn = $("payEmailNote");
+        pn.textContent = u.payEmailNote;
+        const pl = document.createElement("a");
+        pl.href = "privacy.html";
+        pl.target = "_blank";
+        pl.rel = "noopener";
+        pl.textContent = u.payEmailLink;
+        pn.appendChild(pl);
+        pn.appendChild(document.createTextNode("."));
         const tb = $("moreTariffs");
         tb.innerHTML = "";
         const payOn = !!(tariffsData && tariffsData.enabled);
@@ -4103,7 +4185,13 @@
         items.forEach(function (t) {
           const a = document.createElement(payOn ? "a" : "span");
           a.className = "action-btn" + (payOn ? "" : " tariff-off");
-          if (payOn) a.href = API_BASE + "?p=pay&days=" + t.days;
+          if (payOn) {
+            a.href = API_BASE + "?p=pay&days=" + t.days;
+            a.addEventListener("click", function () {
+              const em = $("payEmail").value.trim();
+              a.href = API_BASE + "?p=pay&days=" + t.days + (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em) ? "&email=" + encodeURIComponent(em) : "");
+            });
+          }
           const nm = t.days === 30 ? (currentLang === "ru" ? "30 дней" : "30 days") : t.days === 180 ? (currentLang === "ru" ? "полгода" : "6 months") : t.label;
           a.textContent = nm + " — " + Math.round(parseFloat(t.sum)) + " ₽";
           tb.appendChild(a);
@@ -4363,7 +4451,48 @@
           c = currentCase.case;
         $("topicLabel").textContent = u.caseLabel;
         $("topicText").textContent = c.sit[i];
-        $("negoExtra").textContent = "💡 " + u.tool + ": " + c.tool[i];
+        $("negoExtra").textContent = u.negoTask;
+        renderNegoSol();
+      }
+      function renderNegoSol() {
+        const u = ui[currentLang],
+          i = currentLang === "ru" ? 0 : 1,
+          sol = currentCase && currentCase.sol,
+          box = $("negoSolBox");
+        $("negoSolBtn").textContent = negoShown && sol ? u.negoHide : u.negoShow;
+        box.classList.toggle("show", !!(negoShown && sol));
+        if (!sol) {
+          box.textContent = "";
+          return;
+        }
+        let t = u.negoSolTitle + "\n";
+        sol.steps.forEach(function (st, k) {
+          t += "\n" + (k + 1) + ". " + st[i];
+        });
+        t += "\n\n💡 " + u.tool + ": " + sol.tool[i];
+        box.textContent = t;
+      }
+      function showNegoSol() {
+        if (!currentCase) return;
+        if (negoShown) {
+          negoShown = false;
+          renderNegoSol();
+          return;
+        }
+        if (currentCase.sol) {
+          negoShown = true;
+          renderNegoSol();
+          return;
+        }
+        apiGet("negosol", { idx: currentCase.idx, code: access ? access.code : "" })
+          .then(
+            latest(function (r) {
+              currentCase.sol = r;
+              negoShown = true;
+              renderNegoSol();
+            }),
+          )
+          .catch(apiFail);
       }
       function renderInterview() {
         $("topicText").textContent = currentInterview[currentLang];
@@ -5180,6 +5309,7 @@
           });
         });
         $("exampleBtn").addEventListener("click", showExample);
+        $("negoSolBtn").addEventListener("click", showNegoSol);
         $("trickSelect").addEventListener("change", function () {
           trickPick = parseInt(this.value, 10);
           $("selectBtn").click();
