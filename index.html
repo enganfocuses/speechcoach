@@ -912,6 +912,41 @@
         gap: 8px;
         padding: 4px;
       }
+      .mode-arrow {
+        display: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.35));
+        background: var(--bg, #4e0d1a);
+        color: var(--text, #fae7b5);
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+      }
+      .mode-arrow.show {
+        display: flex;
+      }
+      .mode-arrow.left {
+        left: 2px;
+      }
+      .mode-arrow.right {
+        right: 2px;
+      }
+      body.mode-diction .topic-mini {
+        display: none;
+      }
+      .mode-switch.dragging {
+        cursor: grabbing;
+        scroll-snap-type: none;
+      }
       .mode-btn {
         position: relative;
         z-index: 1;
@@ -2401,6 +2436,8 @@
 
       <div class="mode-switch-wrapper">
         <div class="mode-switch-frame">
+        <button class="mode-arrow left" id="modeArrowL" type="button" aria-label="Назад">‹</button>
+        <button class="mode-arrow right" id="modeArrowR" type="button" aria-label="Вперёд">›</button>
         <div class="mode-switch" id="modeSwitch">
           <button class="mode-btn active" data-mode="impromptu" id="modeBtnImp">Экспромт</button>
           <button class="mode-btn" data-mode="deep" id="modeBtnDeep">Глубже</button>
@@ -4081,7 +4118,10 @@
         const sw = $("modeSwitch");
         if (!sw) return;
         sw.style.setProperty("--fl", sw.scrollLeft > 4 ? "12px" : "0px");
-        sw.style.setProperty("--fr", sw.scrollLeft + sw.clientWidth < sw.scrollWidth - 4 ? "12px" : "0px");
+        const more = sw.scrollLeft + sw.clientWidth < sw.scrollWidth - 4;
+        sw.style.setProperty("--fr", more ? "12px" : "0px");
+        $("modeArrowL").classList.toggle("show", sw.scrollLeft > 4);
+        $("modeArrowR").classList.toggle("show", more);
       }
       function updateModeTexts() {
         const u = ui[currentLang];
@@ -4192,6 +4232,7 @@
         document.body.classList.toggle("mode-custom", m === "custom");
         document.body.classList.toggle("mode-nego", m === "nego");
         document.body.classList.toggle("mode-diction", m === "diction");
+        if (m === "diction") $("topicText").textContent = "";
         document.body.classList.toggle("mode-interview", m === "interview");
         document.body.classList.toggle("mode-tricks", m === "tricks");
         document.body.classList.toggle(
@@ -4894,6 +4935,50 @@
           openMore();
         });
         $("modeSwitch").addEventListener("scroll", updateModeFade, { passive: true });
+        $("modeArrowL").addEventListener("click", function () {
+          $("modeSwitch").scrollBy({ left: -Math.max(160, $("modeSwitch").clientWidth * 0.7), behavior: "smooth" });
+        });
+        $("modeArrowR").addEventListener("click", function () {
+          $("modeSwitch").scrollBy({ left: Math.max(160, $("modeSwitch").clientWidth * 0.7), behavior: "smooth" });
+        });
+        (function () {
+          const sw = $("modeSwitch");
+          let startX = null,
+            startLeft = 0,
+            moved = false;
+          sw.addEventListener("wheel", function (e) {
+            const can = e.deltaY > 0 ? sw.scrollLeft + sw.clientWidth < sw.scrollWidth - 1 : sw.scrollLeft > 0;
+            if (sw.scrollWidth > sw.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX) && can) {
+              sw.scrollLeft += e.deltaY;
+              e.preventDefault();
+            }
+          }, { passive: false });
+          sw.addEventListener("mousedown", function (e) {
+            startX = e.clientX;
+            startLeft = sw.scrollLeft;
+            moved = false;
+          });
+          window.addEventListener("mousemove", function (e) {
+            if (startX === null) return;
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) > 5) {
+              moved = true;
+              sw.classList.add("dragging");
+            }
+            if (moved) sw.scrollLeft = startLeft - dx;
+          });
+          window.addEventListener("mouseup", function () {
+            startX = null;
+            sw.classList.remove("dragging");
+          });
+          sw.addEventListener("click", function (e) {
+            if (moved) {
+              e.stopPropagation();
+              e.preventDefault();
+              moved = false;
+            }
+          }, true);
+        })();
         window.addEventListener("resize", updateModeFade);
         updateModeFade();
         $("codeBtn").addEventListener("click", activateCode);
