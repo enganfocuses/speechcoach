@@ -4567,6 +4567,44 @@
         note.textContent = u.trickNote;
         box.appendChild(note);
       }
+      function renderDiction() {
+        const u = ui[currentLang],
+          list = $("dictionList"),
+          en = currentLang === "en";
+        list.innerHTML = "";
+        let n = 0;
+        function add(tag, title, text, how) {
+          n++;
+          const it = document.createElement("div");
+          it.className = "diction-item";
+          const t = document.createElement("span");
+          t.className = "diction-tag";
+          t.textContent = n + ". " + tag;
+          const h = document.createElement("span");
+          h.className = "diction-title";
+          h.textContent = title;
+          it.appendChild(t);
+          it.appendChild(h);
+          if (text) {
+            const x = document.createElement("div");
+            x.className = "diction-text";
+            x.textContent = "«" + text + "»";
+            it.appendChild(x);
+          }
+          const w = document.createElement("div");
+          w.className = "diction-how";
+          w.textContent = u.dictionHow + how;
+          it.appendChild(w);
+          list.appendChild(it);
+        }
+        (currentDiction.art || []).forEach(function (a) {
+          add(u.dictionArt, en ? a[2] : a[0], "", en ? a[3] : a[1]);
+        });
+        (currentDiction.dic || []).forEach(function (d) {
+          add(u.dictionDic, en ? d[3] : d[0], en ? d[4] : d[1], en ? d[5] : d[2]);
+        });
+        $("topicText").textContent = "";
+      }
       function fillTrickSelect() {
         const sel = $("trickSelect"),
           u = ui[currentLang],
