@@ -1020,7 +1020,31 @@
       .trick-box {
         display: none;
         text-align: left;
-        margin-top: 10px;
+        margin-top: 16px;
+      }
+      .trick-picker {
+        display: none;
+        justify-content: center;
+        margin: 0 0 14px;
+      }
+      body.mode-tricks .trick-picker {
+        display: flex;
+      }
+      .trick-select {
+        width: 440px;
+        max-width: 100%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25));
+        background: var(--glass-bg, rgba(255, 255, 255, 0.1));
+        color: var(--text, #333);
+        font-family: inherit;
+        font-size: 15px;
+      }
+      .trick-select option,
+      .trick-select optgroup {
+        background: var(--bg, #4e0d1a);
+        color: var(--text, #fae7b5);
       }
       body.mode-tricks .trick-box {
         display: block;
@@ -1034,12 +1058,12 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         opacity: 0.75;
-        margin-bottom: 6px;
+        margin-bottom: 14px;
       }
       .trick-sec {
-        margin: 8px 0;
-        font-size: 15px;
-        line-height: 1.5;
+        margin: 22px 0;
+        font-size: 15.5px;
+        line-height: 1.65;
       }
       .trick-sec b {
         display: block;
@@ -1047,16 +1071,26 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         opacity: 0.7;
+        margin-bottom: 6px;
       }
       .trick-sit {
-        padding: 10px 12px;
-        border-radius: 12px;
+        margin-top: 28px;
+        padding: 16px 16px;
+        border-radius: 14px;
         border: 1px solid var(--pill-border, rgba(128, 128, 128, 0.3));
+      }
+      .trick-task {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--pill-border, rgba(128, 128, 128, 0.35));
+        font-size: 14.5px;
+        line-height: 1.6;
       }
       .trick-note {
         font-size: 12px;
         opacity: 0.65;
-        margin-top: 8px;
+        margin-top: 22px;
+        line-height: 1.5;
       }
       .diction-list {
         display: none;
@@ -2505,6 +2539,9 @@
           <button class="dpreset-btn" data-n="8">8</button>
           <button class="dpreset-btn" data-n="10">10</button>
         </div>
+        <div class="trick-picker" id="trickPicker">
+          <select class="trick-select" id="trickSelect" aria-label="Приём"></select>
+        </div>
         <div class="select-btn-wrap">
           <button class="action-btn" id="selectBtn">Выбрать тему</button>
           <button
@@ -2945,6 +2982,15 @@
           trickClassic: "Классическая риторика",
           trickBlack: "Чёрная риторика — учимся распознавать и защищаться",
           trickEssence: "Суть",
+          trickApply: "Как применить",
+          trickRecognize: "Как распознать приём",
+          trickTaskTitle: "Что делать",
+          trickTaskClassic: "1) Прочитайте «Суть» и «Пример». 2) Нажмите «Пуск» и произнесите вслух речь по ситуации (30–60 секунд), обязательно применив приём по шагам из «Как применить». 3) Включите зеркало или запишите себя и проверьте: слышен ли приём?",
+          trickTaskBlack: "1) Прочитайте «Как распознать приём». 2) Нажмите «Пуск» и вслух ответьте на ситуацию: подумайте, какой приём используют, и верните разговор к сути по подсказке «Как ответить». 3) Повторите ответ другими словами.",
+          trickPickRandom: "Случайный приём",
+          trickPickClassic: "Классическая риторика",
+          trickPickBlack: "Чёрная риторика (распознавание и защита)",
+          trickPickLabel: "Выберите приём",
           trickExample: "Пример",
           trickDefense: "Как ответить",
           trickSituation: "Ситуация для отработки",
@@ -3073,6 +3119,15 @@
           trickClassic: "Classical rhetoric",
           trickBlack: "Dark rhetoric — learn to recognise and defend",
           trickEssence: "Essence",
+          trickApply: "How to apply",
+          trickRecognize: "How to recognise it",
+          trickTaskTitle: "What to do",
+          trickTaskClassic: "1) Read \"Essence\" and \"Example\". 2) Press Start and speak aloud for 30–60 seconds on the situation, applying the technique step by step from \"How to apply\". 3) Turn on the mirror or record yourself and check: can the technique be heard?",
+          trickTaskBlack: "1) Read \"How to recognise it\". 2) Press Start and answer the situation aloud: think which technique is being used and bring the conversation back to the point using the \"How to respond\" tip. 3) Repeat your answer in different words.",
+          trickPickRandom: "Random technique",
+          trickPickClassic: "Classical rhetoric",
+          trickPickBlack: "Dark rhetoric (recognise and defend)",
+          trickPickLabel: "Choose a technique",
           trickExample: "Example",
           trickDefense: "How to respond",
           trickSituation: "Situation to practise",
@@ -3192,6 +3247,8 @@
         currentAttack = null,
         currentInterview = null,
         currentTrick = null,
+        trickList = null,
+        trickPick = -1,
         exampleShown = false,
         currentDiction = null,
         currentCase = null;
@@ -3451,7 +3508,12 @@
           return true;
         }
         if (mode === "tricks") {
-          apiGet("tricks", { avoid: currentTrick ? currentTrick.idx : -1, code: access ? access.code : "" })
+          const tq = { avoid: currentTrick ? currentTrick.idx : -1, code: access ? access.code : "" };
+          if (trickPick >= 0) {
+            tq.pick = trickPick;
+            if (currentTrick && currentTrick.idx === trickPick) tq.si = currentTrick.si;
+          }
+          apiGet("tricks", tq)
             .then(
               latest(function (r) {
                 currentTrick = r;
@@ -4164,6 +4226,7 @@
         $("modeBtnNegoText").textContent = (hasAccess() ? "" : "🔒 ") + u.mNego;
         $("modeBtnStory").textContent = u.mStory;
         $("modeBtnTricks").textContent = (hasAccess() ? "" : "🔒 ") + u.mTricks;
+        fillTrickSelect();
         $("modeBtnDiction").textContent = u.mDiction;
         $("modeBtnInterview").textContent = (hasAccess() ? "" : "🔒 ") + u.mInterview;
         $("modeHint").textContent = u["h_" + mode];
@@ -4233,6 +4296,7 @@
         document.body.classList.toggle("mode-nego", m === "nego");
         document.body.classList.toggle("mode-diction", m === "diction");
         if (m === "diction") $("topicText").textContent = "";
+        if (m === "tricks") ensureTrickList();
         document.body.classList.toggle("mode-interview", m === "interview");
         document.body.classList.toggle("mode-tricks", m === "tricks");
         document.body.classList.toggle(
@@ -4339,6 +4403,7 @@
         const u = ui[currentLang],
           i = currentLang === "ru" ? 0 : 1,
           t = currentTrick,
+          black = t.kind === "b",
           box = $("trickBox");
         $("topicText").textContent = t.n[i];
         box.innerHTML = "";
@@ -4350,57 +4415,69 @@
           d.appendChild(b);
           d.appendChild(document.createTextNode(text));
           box.appendChild(d);
+          return d;
         }
         const tag = document.createElement("span");
         tag.className = "trick-tag";
-        tag.textContent = t.kind === "b" ? u.trickBlack : u.trickClassic;
+        tag.textContent = black ? u.trickBlack : u.trickClassic;
         box.appendChild(tag);
         sec(u.trickEssence, t.d[i]);
+        if (t.h) sec(black ? u.trickRecognize : u.trickApply, t.h[i]);
         sec(u.trickExample, t.ex[i]);
         if (t.f) sec(u.trickDefense, t.f[i]);
-        sec(u.trickSituation, t.sit[i], "trick-sit");
+        const sit = sec(u.trickSituation, t.sit[i], "trick-sit");
+        const task = document.createElement("div");
+        task.className = "trick-task";
+        const tb = document.createElement("b");
+        tb.textContent = u.trickTaskTitle + ": ";
+        task.appendChild(tb);
+        task.appendChild(document.createTextNode(black ? u.trickTaskBlack : u.trickTaskClassic));
+        sit.appendChild(task);
         const note = document.createElement("div");
         note.className = "trick-note";
         note.textContent = u.trickNote;
         box.appendChild(note);
       }
-      function renderDiction() {
-        const u = ui[currentLang],
-          list = $("dictionList"),
-          en = currentLang === "en";
-        list.innerHTML = "";
-        let n = 0;
-        function add(tag, title, text, how) {
-          n++;
-          const it = document.createElement("div");
-          it.className = "diction-item";
-          const t = document.createElement("span");
-          t.className = "diction-tag";
-          t.textContent = n + ". " + tag;
-          const h = document.createElement("span");
-          h.className = "diction-title";
-          h.textContent = title;
-          it.appendChild(t);
-          it.appendChild(h);
-          if (text) {
-            const x = document.createElement("div");
-            x.className = "diction-text";
-            x.textContent = "«" + text + "»";
-            it.appendChild(x);
-          }
-          const w = document.createElement("div");
-          w.className = "diction-how";
-          w.textContent = u.dictionHow + how;
-          it.appendChild(w);
-          list.appendChild(it);
+      function fillTrickSelect() {
+        const sel = $("trickSelect"),
+          u = ui[currentLang],
+          i = currentLang === "ru" ? 0 : 1;
+        sel.innerHTML = "";
+        function opt(parent, value, text) {
+          const o = document.createElement("option");
+          o.value = value;
+          o.textContent = text;
+          parent.appendChild(o);
         }
-        (currentDiction.art || []).forEach(function (a) {
-          add(u.dictionArt, en ? a[2] : a[0], "", en ? a[3] : a[1]);
-        });
-        (currentDiction.dic || []).forEach(function (d) {
-          add(u.dictionDic, en ? d[3] : d[0], en ? d[4] : d[1], en ? d[5] : d[2]);
-        });
-        $("topicText").textContent = "";
+        opt(sel, "-1", "🎲 " + u.trickPickRandom);
+        if (trickList) {
+          const gc = document.createElement("optgroup"),
+            gb = document.createElement("optgroup");
+          gc.label = u.trickPickClassic;
+          gb.label = u.trickPickBlack;
+          trickList.forEach(function (t) {
+            opt(t.k === "b" ? gb : gc, String(t.i), t.n[i]);
+          });
+          sel.appendChild(gc);
+          sel.appendChild(gb);
+        }
+        sel.value = String(trickPick);
+        sel.setAttribute("aria-label", u.trickPickLabel);
+      }
+      function ensureTrickList() {
+        if (trickList || !hasAccess()) {
+          fillTrickSelect();
+          return;
+        }
+        fillTrickSelect();
+        apiGet("tricks", { list: 1, code: access ? access.code : "" })
+          .then(function (r) {
+            if (Array.isArray(r)) {
+              trickList = r;
+              fillTrickSelect();
+            }
+          })
+          .catch(function () {});
       }
       function renderDebate() {
         $("topicText").textContent = currentDebate[currentLang];
@@ -5103,6 +5180,10 @@
           });
         });
         $("exampleBtn").addEventListener("click", showExample);
+        $("trickSelect").addEventListener("change", function () {
+          trickPick = parseInt(this.value, 10);
+          $("selectBtn").click();
+        });
         $("flipSideBtn").addEventListener("click", function () {
           debateSide = debateSide === "pro" ? "con" : "pro";
           renderSide();
