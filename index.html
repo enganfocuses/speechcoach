@@ -4457,6 +4457,8 @@
                 inp.focus({ preventScroll: true });
                 return;
               }
+              // Адрес запоминается в браузере только на время оплаты: после возврата с Робокассы он передаётся функции для отправки письма с кодом.
+              store("sg.payemail", ok ? em : "");
               a.href = API_BASE + "?p=pay&days=" + t.days + (ok ? "&email=" + encodeURIComponent(em) : "");
             });
           }
@@ -4509,6 +4511,9 @@
         sp.forEach(function (v, k) {
           if (/^shp_/i.test(k)) params[k] = v;
         });
+        const payEmail = load("sg.payemail");
+        if (payEmail) params.email = payEmail;
+        store("sg.payemail", "");
         try {
           history.replaceState(null, "", location.pathname);
         } catch (e) {}
