@@ -2505,6 +2505,44 @@
           transform: translateX(-50%);
         }
       }
+    
+      /* --- мобильная: RU/EN чуть ниже, темы на всю ширину --- */
+      #topicArea {
+        scroll-margin-top: 16px;
+      }
+      @media (max-width: 500px) {
+        .lang-switch-wrapper {
+          margin-top: 10px;
+        }
+        .categories-grid {
+          width: calc(100% + 12px);
+          margin-left: -6px;
+          margin-right: -6px;
+          gap: 6px;
+        }
+        .category-pill {
+          flex: 1 1 auto;
+          text-align: center;
+        }
+      }
+      /* --- десктоп: RU/EN на уровне кнопки темы, всё остальное выше --- */
+      @media (min-width: 600px) {
+        .lang-switch-wrapper {
+          position: absolute;
+          top: 33px;
+          left: 50%;
+          transform: translateX(-50%);
+          margin: 0;
+          z-index: 55;
+        }
+        .theme-select-wrapper .more-row {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          right: 0;
+          width: auto;
+        }
+      }
     </style>
   </head>
   <body>
@@ -5166,10 +5204,9 @@
           $("timerText").classList.remove("pulse");
           $("startBtn").textContent = ui[currentLang].start;
           updateTimerVisual();
-          if (window.innerWidth <= 500)
-            setTimeout(function () {
-              $("topicArea").scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 100);
+          setTimeout(function () {
+            $("topicArea").scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
         });
         $("changeTopicBtnTop").addEventListener("click", function () {
           if ((mode === "impromptu" || mode === "deep") && selectedCategories.size === 0) {
