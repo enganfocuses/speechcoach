@@ -2555,16 +2555,39 @@
         align-items: center;
       }
     
-      /* --- заметки на десктопе: в одной строке с таймером и зеркалом (а не у верха блока с планом) --- */
+      /* --- заметки на десктопе: таймер, зеркало и заметки в одной строке, как в «Экспромте» --- */
       @media (min-width: 1200px) {
-        #notesBox {
-          align-self: end;
+        .timer-cluster.has-extras {
+          grid-template-columns: auto auto minmax(0, 460px);
+          grid-template-areas:
+            "toggle toggle toggle"
+            "stage stage stage"
+            "timer mirror notes"
+            "mini mini mini"
+            "ctrl ctrl ctrl";
+          column-gap: 0;
+          align-items: center;
         }
-        #notes {
-          min-height: 212px;
+        .timer-cluster.has-extras .timer-mirror-flex {
+          display: contents;
         }
-        body:not(.mode-story):not(.mode-custom) #notesBox {
-          margin-bottom: 24px;
+        .timer-cluster.has-extras .stage-box {
+          grid-area: stage;
+          justify-self: center;
+          max-width: 760px;
+        }
+        .timer-cluster.has-extras .timer-wrapper {
+          grid-area: timer;
+          margin: 24px 0;
+        }
+        .timer-cluster.has-extras #mirrorBox {
+          grid-area: mirror;
+          margin: 24px 0 24px 30px;
+        }
+        .timer-cluster.has-extras #notesBox {
+          grid-area: notes;
+          margin: 0 0 0 32px;
+          align-self: center;
         }
       }
     </style>
