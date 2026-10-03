@@ -151,7 +151,7 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-weight: 700;
-        font-size: calc(clamp(0.7rem, 2.9vw, 1rem) * var(--fz));
+        font-size: calc(clamp(0.7rem, 2.9vw, 1rem) * var(--fz) * 1.2);
         letter-spacing: 0.5px;
         line-height: 0.86;
         min-width: 0;
@@ -1797,10 +1797,9 @@
           padding: 8px max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
         }
         .site-title {
-          font-size: calc(clamp(0.6rem, 3.1vw, 0.78rem) * var(--fz));
+          font-size: calc(clamp(0.6rem, 3.1vw, 0.78rem) * var(--fz) * 1.2);
         }
         .theme-select-wrapper {
-          width: clamp(130px, 46vw, 170px);
           flex-shrink: 0;
           gap: 4px;
         }
@@ -2434,18 +2433,6 @@
         line-height: 1.2;
         text-align: center;
       }
-      .theme-select-wrapper {
-        min-width: 190px;
-      }
-      @media (max-width: 500px) {
-        .theme-select-wrapper {
-          width: clamp(150px, 46vw, 240px);
-          min-width: 150px;
-        }
-      }
-      .theme-btn {
-        text-align: left;
-      }
       .theme-menu {
         width: max-content;
         min-width: 100%;
@@ -2512,7 +2499,7 @@
       }
       @media (max-width: 500px) {
         .lang-switch-wrapper {
-          margin-top: 10px;
+          margin-top: 28px;
         }
         .categories-grid {
           width: calc(100% + 12px);
@@ -2529,7 +2516,7 @@
       @media (min-width: 600px) {
         .lang-switch-wrapper {
           position: absolute;
-          top: 33px;
+          top: 34px;
           left: 50%;
           transform: translateX(-50%);
           margin: 0;
@@ -2542,6 +2529,35 @@
           right: 0;
           width: auto;
         }
+      }
+    
+      /* --- кнопки «Тема оформления» и «Больше режимов»: одинаковые, по тексту, текст по центру --- */
+      .theme-select-wrapper {
+        align-items: stretch;
+        width: max-content;
+        min-width: 0;
+        max-width: 56vw;
+      }
+      .theme-btn,
+      .more-btn {
+        box-sizing: border-box;
+        min-height: 38px;
+        padding: 6px 30px !important;
+        border-width: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+      .theme-btn .select-arrow {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 11px;
+        display: flex;
+        align-items: center;
       }
     </style>
   </head>
