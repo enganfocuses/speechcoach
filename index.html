@@ -1590,6 +1590,18 @@
         color: inherit;
         text-decoration: underline;
       }
+      .pay-email-ask {
+        display: none;
+        font-weight: 700;
+        margin: 8px auto 0;
+      }
+      .pay-email-ask.show {
+        display: block;
+      }
+      .more-email input.attention {
+        border-color: var(--tool, #92acdd);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--tool, #92acdd) 45%, transparent);
+      }
 
       .story-panel {
         display: none;
@@ -2648,6 +2660,7 @@
           <div class="more-note" id="moreAll"></div>
           <div class="more-email">
             <input type="email" id="payEmail" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="100" />
+            <div class="more-note pay-email-ask" id="payEmailAsk" role="alert"></div>
             <div class="more-note" id="payEmailNote"></div>
           </div>
           <div class="more-tariffs" id="moreTariffs"></div>
@@ -3218,6 +3231,7 @@
           payEmailPh: "E-mail для отправки кода (необязательно)",
           payEmailNote: "Если укажете почту, мы отправим код и на неё. Код в любом случае появится на экране после оплаты. Адрес используется только для отправки кода — подробнее в ",
           payEmailLink: "Политике конфиденциальности",
+          payEmailAsk: "Укажите e-mail, чтобы код пришёл и на почту (его легко потерять). Если почта не нужна — нажмите на тариф ещё раз: код появится на экране после оплаты.",
           noDir: "Выберите хотя бы одно направление",
           mStory: "Сторителлинг",
           h_story: "Без таймера: картины, пересказ, слова и импровизация",
@@ -3365,6 +3379,7 @@
           payEmailPh: "E-mail to send the code to (optional)",
           payEmailNote: "If you enter an e-mail, we will send the code there too. The code will appear on screen after payment in any case. The address is used only to send the code — details in the ",
           payEmailLink: "Privacy Policy",
+          payEmailAsk: "Enter your e-mail so the code is also sent to your inbox (it is easy to lose). If you do not need it, press the plan again: the code will appear on screen after payment.",
           noDir: "Select at least one direction",
           mStory: "Storytelling",
           h_story: "No timer: paintings, retelling, words and improvisation",
@@ -3497,7 +3512,8 @@
         { days: 30, label: "30 дней", sum: "299.00" },
         { days: 180, label: "полгода", sum: "1490.00" },
       ];
-      let access = null,
+      let payEmailAsked = false,
+        access = null,
         tariffsData = null,
         justGotCode = "",
         pendingPremium = "";
@@ -4294,6 +4310,9 @@
       }
       function renderMore() {
         const u = ui[currentLang];
+        payEmailAsked = false;
+        $("payEmailAsk").classList.remove("show");
+        $("payEmail").classList.remove("attention");
         $("moreBtnText").textContent = u.moreBtn;
         const box = $("moreModes");
         box.innerHTML = "";
@@ -4348,9 +4367,22 @@
           a.className = "action-btn" + (payOn ? "" : " tariff-off");
           if (payOn) {
             a.href = API_BASE + "?p=pay&days=" + t.days;
-            a.addEventListener("click", function () {
-              const em = $("payEmail").value.trim();
-              a.href = API_BASE + "?p=pay&days=" + t.days + (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em) ? "&email=" + encodeURIComponent(em) : "");
+            a.addEventListener("click", function (e) {
+              const inp = $("payEmail"),
+                em = inp.value.trim(),
+                ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+              if (!ok && tariffsData && tariffsData.mail && !payEmailAsked) {
+                e.preventDefault();
+                payEmailAsked = true;
+                const ask = $("payEmailAsk");
+                ask.textContent = ui[currentLang].payEmailAsk;
+                ask.classList.add("show");
+                inp.classList.add("attention");
+                inp.scrollIntoView({ behavior: "smooth", block: "center" });
+                inp.focus({ preventScroll: true });
+                return;
+              }
+              a.href = API_BASE + "?p=pay&days=" + t.days + (ok ? "&email=" + encodeURIComponent(em) : "");
             });
           }
           const nm = t.days === 30 ? (currentLang === "ru" ? "30 дней" : "30 days") : t.days === 180 ? (currentLang === "ru" ? "полгода" : "6 months") : t.label;
@@ -5201,6 +5233,10 @@
         });
         document.addEventListener("click", function (e) {
           if (!e.target.closest(".theme-select-wrapper")) closeThemeMenu();
+        });
+        $("payEmail").addEventListener("input", function () {
+          this.classList.remove("attention");
+          $("payEmailAsk").classList.remove("show");
         });
         $("langSwitch").addEventListener("click", function () {
           switchLang(currentLang === "ru" ? "en" : "ru");
