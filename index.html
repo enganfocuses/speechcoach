@@ -1590,6 +1590,36 @@
         color: inherit;
         text-decoration: underline;
       }
+      .pay-consent {
+        display: none;
+        align-items: flex-start;
+        gap: 8px;
+        max-width: 420px;
+        margin: 10px auto 0;
+        text-align: left;
+        font-size: calc(12.5px * var(--fz));
+        line-height: 1.4;
+        cursor: pointer;
+      }
+      .pay-consent.show {
+        display: flex;
+      }
+      .pay-consent input {
+        flex: 0 0 auto;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        accent-color: var(--tool, #92acdd);
+      }
+      .pay-consent a {
+        color: inherit;
+        text-decoration: underline;
+      }
+      .pay-consent.attention {
+        outline: 2px solid var(--tool, #92acdd);
+        outline-offset: 4px;
+        border-radius: 8px;
+      }
       .pay-email-ask {
         display: none;
         font-weight: 700;
@@ -2660,6 +2690,10 @@
           <div class="more-note" id="moreAll"></div>
           <div class="more-email">
             <input type="email" id="payEmail" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="100" />
+            <label class="pay-consent" id="payConsentLabel">
+              <input type="checkbox" id="payConsent" />
+              <span><span id="payConsentText"></span> <a id="payConsentLink" href="privacy.html" target="_blank" rel="noopener"></a></span>
+            </label>
             <div class="more-note pay-email-ask" id="payEmailAsk" role="alert"></div>
             <div class="more-note" id="payEmailNote"></div>
           </div>
@@ -3229,8 +3263,11 @@
           negoHide: "Скрыть предложенный вариант",
           negoSolTitle: "Предложенный порядок решения:",
           payEmailPh: "E-mail для отправки кода (необязательно)",
-          payEmailNote: "Если укажете почту, мы отправим код и на неё. Код в любом случае появится на экране после оплаты. Адрес используется только для отправки кода — подробнее в ",
+          payEmailNote: "Если указать почту, код будет отправлен и на неё. Код в любом случае появится на экране после оплаты. Адрес используется только для отправки кода — подробнее в ",
           payEmailLink: "Политике конфиденциальности",
+          payConsentText: "Я согласен(на) на обработку моего e-mail для отправки кода доступа в соответствии с",
+          payConsentLink: "Политикой конфиденциальности",
+          payConsentAsk: "Поставьте галочку согласия на обработку e-mail или очистите поле, если почта не нужна.",
           payEmailAsk: "Укажите e-mail, чтобы код пришёл и на почту (его легко потерять). Если почта не нужна — нажмите на тариф ещё раз: код появится на экране после оплаты.",
           noDir: "Выберите хотя бы одно направление",
           mStory: "Сторителлинг",
@@ -3276,14 +3313,14 @@
           moreUntil: " (до ",
           moreExpired: "Срок действия кода закончился. Получите новый ниже.",
           moreCodePh: "Код доступа",
-          moreNoCode: "Платные режимы открываются по коду доступа. Без регистрации и без личных данных.",
+          moreNoCode: "Платные режимы открываются по коду доступа. Регистрация не требуется.",
           moreActivate: "Активировать",
           moreBadCode: "Код не подошёл. Проверьте, что введены все символы.",
           moreGotCode: "Оплата прошла! Ваш код доступа — сохраните его:",
           moreCopy: "Скопировать",
           moreCopied: "Скопировано",
           moreTariffs: "Получить доступ:",
-          moreNote: "Оплата через Робокассу. Мы не просим регистрацию и не храним ваши данные. После оплаты вы получите код — сохраните его.",
+          moreNote: "Оплата проходит через Робокассу, регистрация не требуется. После оплаты выдаётся код доступа — сохраните его.",
           moreNoPay: "Оплата откроется совсем скоро.",
           moreAll: "Любой тариф открывает ВСЕ платные режимы сразу — по одному коду.",
           morePayFail: "Не удалось подтвердить оплату. Если деньги списались — напишите автору сайта.",
@@ -3377,8 +3414,11 @@
           negoHide: "Hide suggested solution",
           negoSolTitle: "Suggested resolution order:",
           payEmailPh: "E-mail to send the code to (optional)",
-          payEmailNote: "If you enter an e-mail, we will send the code there too. The code will appear on screen after payment in any case. The address is used only to send the code — details in the ",
+          payEmailNote: "If an e-mail is entered, the code will be sent there too. The code will appear on screen after payment in any case. The address is used only to send the code — details in the ",
           payEmailLink: "Privacy Policy",
+          payConsentText: "I agree to the processing of my e-mail to send the access code, in accordance with the",
+          payConsentLink: "Privacy Policy",
+          payConsentAsk: "Please tick the consent box for processing your e-mail, or clear the field if you do not need e-mail.",
           payEmailAsk: "Enter your e-mail so the code is also sent to your inbox (it is easy to lose). If you do not need it, press the plan again: the code will appear on screen after payment.",
           noDir: "Select at least one direction",
           mStory: "Storytelling",
@@ -3425,14 +3465,14 @@
           moreUntil: " (until ",
           moreExpired: "Your code has expired. Get a new one below.",
           moreCodePh: "Access code",
-          moreNoCode: "Paid modes unlock with an access code. No sign-up, no personal data.",
+          moreNoCode: "Paid modes unlock with an access code. No sign-up is required.",
           moreActivate: "Activate",
           moreBadCode: "The code was not accepted. Check that every character is entered.",
           moreGotCode: "Payment received! Your access code — keep it safe:",
           moreCopy: "Copy",
           moreCopied: "Copied",
           moreTariffs: "Get access:",
-          moreNote: "Payment via Robokassa. We ask for no sign-up and store none of your data. After paying you get a code — keep it.",
+          moreNote: "Payment is processed via Robokassa; no sign-up is required. An access code is issued after payment — keep it.",
           moreNoPay: "Payment opens very soon.",
           moreAll: "Any plan unlocks ALL paid modes at once — with one code.",
           morePayFail: "Could not confirm the payment. If money was charged, please contact the site author.",
@@ -4313,6 +4353,10 @@
         payEmailAsked = false;
         $("payEmailAsk").classList.remove("show");
         $("payEmail").classList.remove("attention");
+        $("payConsentLabel").classList.remove("attention");
+        $("payConsentText").textContent = u.payConsentText;
+        $("payConsentLink").textContent = u.payConsentLink;
+        $("payConsentLabel").classList.toggle("show", !!(tariffsData && tariffsData.mail));
         $("moreBtnText").textContent = u.moreBtn;
         const box = $("moreModes");
         box.innerHTML = "";
@@ -4371,6 +4415,15 @@
               const inp = $("payEmail"),
                 em = inp.value.trim(),
                 ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+              if (ok && tariffsData && tariffsData.mail && !$("payConsent").checked) {
+                e.preventDefault();
+                const ask = $("payEmailAsk");
+                ask.textContent = ui[currentLang].payConsentAsk;
+                ask.classList.add("show");
+                $("payConsentLabel").classList.add("attention");
+                $("payConsentLabel").scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+              }
               if (!ok && tariffsData && tariffsData.mail && !payEmailAsked) {
                 e.preventDefault();
                 payEmailAsked = true;
@@ -5236,6 +5289,10 @@
         });
         $("payEmail").addEventListener("input", function () {
           this.classList.remove("attention");
+          $("payEmailAsk").classList.remove("show");
+        });
+        $("payConsent").addEventListener("change", function () {
+          $("payConsentLabel").classList.remove("attention");
           $("payEmailAsk").classList.remove("show");
         });
         $("langSwitch").addEventListener("click", function () {
