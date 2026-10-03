@@ -3550,7 +3550,7 @@
       const PREMIUM_MODES = ["conflict", "nego", "interview", "tricks"];
       const DEFAULT_TARIFFS = [
         { days: 30, label: "30 дней", sum: "299.00" },
-        { days: 180, label: "полгода", sum: "1490.00" },
+        { days: 180, label: "6 месяцев (180 дней)", sum: "1490.00" },
       ];
       let payEmailAsked = false,
         access = null,
@@ -4438,7 +4438,7 @@
               a.href = API_BASE + "?p=pay&days=" + t.days + (ok ? "&email=" + encodeURIComponent(em) : "");
             });
           }
-          const nm = t.days === 30 ? (currentLang === "ru" ? "30 дней" : "30 days") : t.days === 180 ? (currentLang === "ru" ? "полгода" : "6 months") : t.label;
+          const nm = t.days === 30 ? (currentLang === "ru" ? "30 дней" : "30 days") : t.days === 180 ? (currentLang === "ru" ? "6 месяцев (180 дней)" : "6 months (180 days)") : t.label;
           a.textContent = nm + " — " + Math.round(parseFloat(t.sum)) + " ₽";
           tb.appendChild(a);
         });
