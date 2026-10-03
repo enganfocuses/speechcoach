@@ -2554,6 +2554,19 @@
         display: flex;
         align-items: center;
       }
+    
+      /* --- заметки на десктопе: в одной строке с таймером и зеркалом (а не у верха блока с планом) --- */
+      @media (min-width: 1200px) {
+        #notesBox {
+          align-self: end;
+        }
+        #notes {
+          min-height: 212px;
+        }
+        body:not(.mode-story):not(.mode-custom) #notesBox {
+          margin-bottom: 24px;
+        }
+      }
     </style>
   </head>
   <body>
