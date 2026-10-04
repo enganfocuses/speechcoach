@@ -2714,7 +2714,7 @@
             <input type="email" id="payEmail" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="100" />
             <label class="pay-consent" id="payConsentLabel">
               <input type="checkbox" id="payConsent" />
-              <span><span id="payConsentText"></span> <a id="payConsentLink" href="privacy.html" target="_blank" rel="noopener"></a></span>
+              <span><span id="payConsentText"></span> <a id="payConsentLink" href="privacy.html" target="_blank" rel="noopener"></a><span id="payConsentMid"></span><a id="payConsentLink2" href="consent.html" target="_blank" rel="noopener"></a><span id="payConsentTail"></span></span>
             </label>
             <div class="more-note pay-email-ask" id="payEmailAsk" role="alert"></div>
             <div class="more-note" id="payEmailNote"></div>
@@ -2987,6 +2987,7 @@
       <span class="legal-links">
         <a class="legal-link" id="legalOffer" href="offer.html" target="_blank" rel="noopener">Публичная оферта</a>
         <a class="legal-link" id="legalPrivacy" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>
+        <a class="legal-link" id="legalConsent" href="consent.html" target="_blank" rel="noopener">Согласие на обработку данных</a>
       </span>
       <span class="legal-id" id="legalId">
         <span>Семенова Анна Нестеровна</span>
@@ -3287,8 +3288,11 @@
           payEmailPh: "E-mail для отправки кода (необязательно)",
           payEmailNote: "Если указать почту, код будет отправлен и на неё. Код в любом случае появится на экране после оплаты. Адрес используется только для отправки кода — подробнее в ",
           payEmailLink: "Политике конфиденциальности",
-          payConsentText: "Я согласен(на) на обработку моего e-mail для отправки кода доступа в соответствии с",
+          payConsentText: "Я ознакомлен(а) с",
           payConsentLink: "Политикой конфиденциальности",
+          payConsentMid: " и даю ",
+          payConsentLink2: "согласие на обработку моего e-mail",
+          payConsentTail: " для отправки кода доступа",
           payConsentAsk: "Поставьте галочку согласия на обработку e-mail или очистите поле, если почта не нужна.",
           payEmailAsk: "Укажите e-mail, чтобы код пришёл и на почту (его легко потерять). Если почта не нужна — нажмите на тариф ещё раз: код появится на экране после оплаты.",
           noDir: "Выберите хотя бы одно направление",
@@ -3323,6 +3327,7 @@
           moreModeConflictDesc: "Реплика-нападение и три шага ответа",
           legalOffer: "Публичная оферта",
           legalPrivacy: "Политика конфиденциальности",
+          legalConsent: "Согласие на обработку данных",
           moreModeNego: "Переговоры",
           moreModeNegoDesc: "Кейс-ситуация: вы сами строите порядок решения, затем сравниваете с пошаговым вариантом",
           moreModeInterview: "Интервью",
@@ -3438,8 +3443,11 @@
           payEmailPh: "E-mail to send the code to (optional)",
           payEmailNote: "If an e-mail is entered, the code will be sent there too. The code will appear on screen after payment in any case. The address is used only to send the code — details in the ",
           payEmailLink: "Privacy Policy",
-          payConsentText: "I agree to the processing of my e-mail to send the access code, in accordance with the",
+          payConsentText: "I have read the",
           payConsentLink: "Privacy Policy",
+          payConsentMid: " and give ",
+          payConsentLink2: "my consent to processing my e-mail",
+          payConsentTail: " to send the access code",
           payConsentAsk: "Please tick the consent box for processing your e-mail, or clear the field if you do not need e-mail.",
           payEmailAsk: "Enter your e-mail so the code is also sent to your inbox (it is easy to lose). If you do not need it, press the plan again: the code will appear on screen after payment.",
           noDir: "Select at least one direction",
@@ -3475,6 +3483,7 @@
           moreModeConflictDesc: "A verbal attack and three steps to answer",
           legalOffer: "Public offer",
           legalPrivacy: "Privacy policy",
+          legalConsent: "Data processing consent",
           moreModeNego: "Negotiation",
           moreModeNegoDesc: "A case: you build the resolution order yourself, then compare with a step-by-step option",
           moreModeInterview: "Interview",
@@ -4378,6 +4387,9 @@
         $("payConsentLabel").classList.remove("attention");
         $("payConsentText").textContent = u.payConsentText;
         $("payConsentLink").textContent = u.payConsentLink;
+        $("payConsentMid").textContent = u.payConsentMid;
+        $("payConsentLink2").textContent = u.payConsentLink2;
+        $("payConsentTail").textContent = u.payConsentTail;
         $("payConsentLabel").classList.toggle("show", !!(tariffsData && tariffsData.mail));
         $("moreBtnText").textContent = u.moreBtn;
         const box = $("moreModes");
@@ -4573,6 +4585,7 @@
         setTimeout(updateModeFade, 0);
         $("legalOffer").textContent = u.legalOffer;
         $("legalPrivacy").textContent = u.legalPrivacy;
+        $("legalConsent").textContent = u.legalConsent;
         $("modeBtnCustom").textContent = u.mCustom;
         $("customHelp").textContent = u.customHelp;
         $("customText").placeholder = u.customPh;
